@@ -35,8 +35,8 @@ def send_telegram(msg):
 
 
 def check_telegram_commands():
-    """Фоновая проверка команд /on /off /status /spred /setspread"""
-    global notifications_enabled, MIN_SPREAD
+    """Фоновая проверка команд /on /off /status /spred /setspread /setvolume /setinterval"""
+    global notifications_enabled, MIN_SPREAD, MIN_VOLUME_USDT, CHECK_INTERVAL
     offset = 0
     while True:
         try:
@@ -94,6 +94,34 @@ def check_telegram_commands():
                             send_telegram(f"✅ Минимальный спред изменён на {MIN_SPREAD:.2f}%")
                         except ValueError:
                             send_telegram("⚠️ Некорректное значение. Введите число, например: /setspread 0.8")
+                    elif text.startswith("/setvolume"):
+                        try:
+                            parts = text.split()
+                            if len(parts) != 2:
+                                send_telegram("⚠️ Использование: /setvolume 500")
+                                continue
+                            new_volume = float(parts[1])
+                            if new_volume <= 0:
+                                send_telegram("⚠️ Ликвидность должна быть положительным числом.")
+                                continue
+                            MIN_VOLUME_USDT = new_volume
+                            send_telegram(f"✅ Минимальная ликвидность изменена на {MIN_VOLUME_USDT:.2f} USDT")
+                        except ValueError:
+                            send_telegram("⚠️ Некорректное значение. Введите число, например: /setvolume 500")
+                    elif text.startswith("/setinterval"):
+                        try:
+                            parts = text.split()
+                            if len(parts) != 2:
+                                send_telegram("⚠️ Использование: /setinterval 30")
+                                continue
+                            new_interval = float(parts[1])
+                            if new_interval < 1:
+                                send_telegram("⚠️ Интервал должен быть не меньше 1 секунды.")
+                                continue
+                            CHECK_INTERVAL = new_interval
+                            send_telegram(f"✅ Интервал проверки спредов изменён на {CHECK_INTERVAL:.1f} сек")
+                        except ValueError:
+                            send_telegram("⚠️ Некорректное значение. Введите число, например: /setinterval 30")
         except Exception as e:
             print("Ошибка при чтении команд:", e)
         time.sleep(3)
@@ -220,4 +248,5 @@ if __name__ == "__main__":
         except Exception as e:
             print("Ошибка во время работы:", e)
         time.sleep(CHECK_INTERVAL)
+
 
