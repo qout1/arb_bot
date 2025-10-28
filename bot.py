@@ -10,8 +10,8 @@ CHAT_ID = "1192605614"
 
 EXCHANGE_NAMES = ['binance', 'bybit', 'bitget', 'mexc']  # биржи
 QUOTE_FILTER = 'USDT'        # фильтр валютных пар
-MIN_SPREAD = 10.0            # минимальный % спред для уведомления
-MIN_VOLUME_USDT = 300000     # минимальная ликвидность в USDT
+MIN_SPREAD = 5.0             # минимальный % спред для уведомления
+MIN_VOLUME_USDT = 5000       # минимальная ликвидность в USDT
 CHECK_INTERVAL = 30          # интервал проверки (в сек)
 LOAD_PAUSE = 1.0             # пауза между загрузками бирж
 
@@ -248,5 +248,6 @@ if __name__ == "__main__":
         except Exception as e:
             print("Ошибка во время работы:", e)
         time.sleep(CHECK_INTERVAL)
+
 
 
